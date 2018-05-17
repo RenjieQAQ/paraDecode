@@ -115,7 +115,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="optDecode.cpp" />
     <ClCompile Include="paraDecodeMain.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="optDecode.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
