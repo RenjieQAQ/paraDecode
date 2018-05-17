@@ -35,13 +35,15 @@ class mycmd{
 	int noPara;
 	int noOpt;
 	myopt *options;
+	int id;
 public:
 	friend class cmdDecode;
-	mycmd(string name,myopt opts[],int paracfg= myopt_PARA,int optcfg= myopt_OPT) {
+	mycmd(string name,myopt opts[],int id,int paracfg= myopt_PARA,int optcfg= myopt_OPT) {
 		this->cmdname = name;
 		options = opts;
 		noPara = paracfg;
 		noOpt = optcfg;
+		this->id = id;
 	}
 	int decode(string line);
 	string name() {
@@ -60,6 +62,9 @@ class cmdDecode {
 	int cmdNUm;
 	int flag;
 	int curCmdIndex;
+
+	int id;
+	int _data;
 public:
 	cmdDecode(mycmd cmds[],int num) {
 		cmd = cmds;
@@ -69,6 +74,9 @@ public:
 	}
 	int decode(string line);
 	int checkPatch(string &str);
+	int data() {
+		return _data;
+	}
 };
 
 

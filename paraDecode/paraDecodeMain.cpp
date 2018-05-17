@@ -3,6 +3,7 @@
 using namespace std;
 #include <stdio.h>
 #include "optDecode.h"
+#include "command.h"
 
 
 myopt optFix[] = {
@@ -19,10 +20,10 @@ myopt optIR[] = {
 };
 
 mycmd cmd[] = {
-	{"fix",optFix},
-	{"save",NULL,myopt_PARA,myopt_NOOPT },
-	{ "ir",optIR,myopt_NOPARA,myopt_OPT },
-	{ "test",optIR,myopt_NOPARA,myopt_NOOPT }
+	{"fix",optFix,cmdline_fix },
+	{"save",NULL,cmdline_save,myopt_PARA,myopt_NOOPT },
+	{ "ir",optIR,cmdline_ir,myopt_NOPARA,myopt_OPT },
+	{ "test",optIR,cmdline_test,myopt_NOPARA,myopt_NOOPT }
 };
 cmdDecode cmd_decode(cmd,4);
 int main() {
@@ -31,37 +32,31 @@ int main() {
 	string line;
 	while (1) {
 		getline(cin, line);
-		cmd_decode.decode(line);
+		int id;
+		while (id = cmd_decode.decode(line),id>0) {
+			switch (id >> 8) {
+			case cmdline_fix:
+				cout << "fix:" <<(id &0xff)<< endl;
+				cout << "data:" << cmd_decode.data() << endl;
+				break;
+			case cmdline_save:
+				cout << "save:" << (id & 0xff) << endl;
+				cout << "data:" << cmd_decode.data() << endl;
+				break;
+			case cmdline_ir:
+				cout << "ir:" << (id & 0xff) << endl;
+				cout << "data:" << cmd_decode.data() << endl;
+				break;
+			case cmdline_test:
+				cout << "test:" << (id & 0xff) << endl;
+				cout << "data:" << cmd_decode.data() << endl;
+				break;
+			default:
+				cout << "cmd error" << endl;
+				break;
+			}
+		}
+		;
 	}
 	system("PAUSE");
 }
-//
-//int main()
-//{
-//	string str1 = "fix -a 234243";
-//	string::size_type iLatter  = 0;
-//	string::size_type iFormer = string::npos;
-//
-//	while(1)
-//	{
-//		iLatter= str1.find_first_not_of(' ', iLatter);
-//		if(string::npos== iLatter)
-//		{
-//			break;
-//		}
-//		iFormer = str1.find_first_of(' ', iLatter + 1);
-//		if(string::npos == iFormer)
-//		{
-//			iFormer = str1.length();
-//		}
-//
-//		// str2, str3, str4
-//		string strNew(str1, iLatter, iFormer - iLatter);
-//
-//		cout<< strNew << endl;
-//
-//		iLatter = iFormer + 1;
-//	}
-//
-//	getchar();
-//}

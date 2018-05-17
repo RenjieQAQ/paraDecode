@@ -32,7 +32,10 @@ int cmdDecode::decode(string line) {
 
 		iLatter = iFormer + 1;
 	}
-	return 0;
+	if(flag==0)
+		return id;
+	if (flag == -1)
+		return 0;
 }
 
 int cmdDecode::checkPatch(string &str){
@@ -40,16 +43,19 @@ int cmdDecode::checkPatch(string &str){
 		int match = 0;
 		for (int i = 0; i < cmdNUm; i++) {
 			if (cmd[i].match(str)) {
+				curCmdIndex = i;
 				match++;
 				break;
 			}
 		}
 		if (match == 0) {
 			cout << "没有此命令" << str << endl;
+			id = -1;
 			return -1;
 		}
 		else {
 			//if((cmd[curCmdIndex].noPara==1) && (cmd[curCmdIndex].noOpt==1))
+			id = (cmd[curCmdIndex].id << 8);
 		}
 		flag++;
 	}
