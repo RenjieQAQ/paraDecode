@@ -30,7 +30,7 @@ myopt optTest[] = {
 
 mycmd cmd[] = {
 	{"fix",optFix,cmdline_fix },
-	{"save",NULL,cmdline_save, },
+	//{"save",NULL,cmdline_save, },
 	{ "ir",optIR,cmdline_ir},
 	{ "test",optTest,cmdline_test},
 	{0}
@@ -43,11 +43,15 @@ int main() {
 	while (1) {
 		getline(cin, line);
 		int id = cmd_decode.decode(line);
-		if ((id >> 8) <= 0) {
+		if ((id >> 8) < 0) {
 			cout << "cmd error" << endl;
 			continue;
 		}
-
+		if ((id >> 8) == 0) {
+			cout << "please input cmd" << endl;
+			continue;
+		}
+		cout << "------------" << endl;
 		while (id = cmd_decode.getid() ,id>0) {
 			switch (id >> 8) {
 			case cmdline_fix:

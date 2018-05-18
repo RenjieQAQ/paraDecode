@@ -20,6 +20,7 @@ enum {
 class myopt {
 public:
 	const char *name;
+	int id;
 	int noPara;
 	int paraType;/*0:Êý×Ö,1:×Ö·û´®*/
 public:
@@ -27,6 +28,12 @@ public:
 		this->name = name;
 		noPara = arg1;
 		paraType = arg2;
+		if (name == NULL)
+			id = -1;
+		else if (strcmp(name, "null") == 0)
+			id = 0;
+		else 
+			id = name[1];
 	}
 };
 
@@ -41,15 +48,16 @@ class mycmd{
 	bool find(string str) {
 		int i = 0;
 		int temp = 0;
-		while (options[i++].name != NULL)
+		while (options[i].name != NULL)
 		{
 			if (options[i].name == NULL)
 				return 0;
 			if (str.compare(options[i].name) == 0) {
-				temp = i;
+				temp ++;
 				curopt = options + i;
 				break;
 			}
+			i++;
 		}
 		return temp;
 	}
@@ -132,8 +140,8 @@ public:
 			return 0;
 	}
 	int data() {
-		if (id_index < id_num)
-			return _data[id_index++];
+		if (id_index <= id_num)
+			return _data[id_index-1];
 		else
 			return 0;
 	}
