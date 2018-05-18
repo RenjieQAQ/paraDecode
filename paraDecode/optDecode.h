@@ -33,17 +33,49 @@ public:
 class mycmd{
 	string cmdname;
 	int noPara;
-	int noOpt;
+	//int noOpt;
 	myopt *options;
+	myopt *curopt;
 	int id;
+
+	bool find(string str) {
+		int i = 0;
+		int temp = 0;
+		while (options[i++].name != NULL)
+		{
+			if (options[i].name == NULL)
+				return 0;
+			if (str.compare(options[i].name) == 0) {
+				temp = i;
+				curopt = options + i;
+				break;
+			}
+		}
+		return temp;
+	}
 public:
 	friend class cmdDecode;
-	mycmd(string name,myopt opts[],int id,int paracfg= myopt_PARA,int optcfg= myopt_OPT) {
+	mycmd(char *name) {
+		cmdname = "";
+		options = NULL;
+		id = 0;
+		curopt = NULL;
+	}
+	mycmd(string name,myopt opts[],int id=0) {
 		this->cmdname = name;
 		options = opts;
-		noPara = paracfg;
-		noOpt = optcfg;
+		//noPara = paracfg;
+		//noOpt = optcfg;
 		this->id = id;
+		curopt = NULL;
+		if (opts == NULL) {
+			noPara = 1;
+			return;
+		}
+		if (find("null"))
+			noPara = 1;
+		else
+			noPara = 0;
 	}
 	int decode(string line);
 	string name() {
@@ -57,25 +89,53 @@ public:
 	}
 };
 
+/***********************************/
 class cmdDecode {
 	mycmd *cmd;
+	mycmd *curcmd;
+	//myopt *curopt;
 	int cmdNUm;
 	int flag;
-	int curCmdIndex;
+	//int curCmdIndex;
 
-	int id;
-	int _data;
+	int id[10];
+	int _data[10];
+	int id_num;
+	int id_index;
+private:
+	int checkPatch(string &str);
+	bool find(string &str) {
+		int match = 0;
+		for (int i = 0; i < cmdNUm; i++) {
+			if (cmd[i].match(str)) {
+				curcmd = cmd+i;//curCmdIndex = i;
+				match++;
+				break;
+			}
+		}
+		return match;
+	}
 public:
-	cmdDecode(mycmd cmds[],int num) {
+	cmdDecode(mycmd cmds[]) {
 		cmd = cmds;
-		cmdNUm = num;
+		int i = 0;
+		while (cmd[i++].cmdname!="");
+		cmdNUm = i-1;
 		flag = 0;
-		curCmdIndex = -1;
+		curcmd = NULL;
 	}
 	int decode(string line);
-	int checkPatch(string &str);
+	int getid() {
+		if (id_index < id_num)
+			return id[id_index++];
+		else
+			return 0;
+	}
 	int data() {
-		return _data;
+		if (id_index < id_num)
+			return _data[id_index++];
+		else
+			return 0;
 	}
 };
 

@@ -10,30 +10,45 @@ myopt optFix[] = {
 	{ "-a",myopt_PARA ,myopt_NUM },
 	{ "-B",myopt_PARA ,myopt_STR },
 	{ "-x",myopt_NOPARA ,myopt_STR },
+	{ "null",myopt_NOPARA ,myopt_STR },
 	{0}
 };
 myopt optIR[] = {
 	{ "-s",myopt_PARA ,myopt_NUM },
 	{ "-a",myopt_PARA ,myopt_STR },
 	{ "-c",myopt_NOPARA ,myopt_STR },
+	{ "null",myopt_PARA ,myopt_STR },
+	{ 0 }
+};
+myopt optTest[] = {
+	{ "-s",myopt_PARA ,myopt_NUM },
+	{ "-a",myopt_PARA ,myopt_STR },
+	{ "-c",myopt_NOPARA ,myopt_STR },
+//{ "null",myopt_PARA ,myopt_STR },
 	{ 0 }
 };
 
 mycmd cmd[] = {
 	{"fix",optFix,cmdline_fix },
-	{"save",NULL,cmdline_save,myopt_PARA,myopt_NOOPT },
-	{ "ir",optIR,cmdline_ir,myopt_NOPARA,myopt_OPT },
-	{ "test",optIR,cmdline_test,myopt_NOPARA,myopt_NOOPT }
+	{"save",NULL,cmdline_save, },
+	{ "ir",optIR,cmdline_ir},
+	{ "test",optTest,cmdline_test},
+	{0}
 };
-cmdDecode cmd_decode(cmd,4);
+cmdDecode cmd_decode(cmd);
 int main() {
 
 	cout << "Hello" << endl;
 	string line;
 	while (1) {
 		getline(cin, line);
-		int id;
-		while (id = cmd_decode.decode(line),id>0) {
+		int id = cmd_decode.decode(line);
+		if ((id >> 8) <= 0) {
+			cout << "cmd error" << endl;
+			continue;
+		}
+
+		while (id = cmd_decode.getid() ,id>0) {
 			switch (id >> 8) {
 			case cmdline_fix:
 				cout << "fix:" <<(id &0xff)<< endl;
@@ -52,7 +67,7 @@ int main() {
 				cout << "data:" << cmd_decode.data() << endl;
 				break;
 			default:
-				cout << "cmd error" << endl;
+				cout << "emmmmmm" << endl;
 				break;
 			}
 		}
